@@ -131,7 +131,7 @@ export default function RewardsLandingPage() {
           </div>
           
           <div className="hidden md:flex items-center space-x-4">
-            <a href="#" className="text-gray-600 hover:text-indigo-600">Login</a>
+            <a href="/login" className="text-gray-600 hover:text-indigo-600">Login</a>
             <a href="#join" className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">Join Now</a>
           </div>
           

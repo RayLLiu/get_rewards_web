@@ -1,25 +1,52 @@
 import { useState, useEffect } from 'react';
-import { User, Clock, ShoppingBag, Award } from 'lucide-react';
-import './UserProfile.css';
-
+import { Star, Gift, Activity, Award, ChevronRight, Bell, Settings, User, LogOut, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
+import AvailableRewards from '../legoPiece/AvailableRewards';
+import RedeemHistory from '../legoPiece/RedeemHistory';
 
-// Main component
 export default function UserProfile() {
+  const navigate = useNavigate();
+  const api = useApi();
+  const [tierStatus, setTierStatus] = useState("Silver");
+  const [availableRewards, setAvailableRewards] = useState(null);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const api = useApi();
+
+  const [recentActivities, setPointData] = useState(null);
+  
+  const [redeemHistory, setRedeemHistory] = useState(null);
+
+  const handleBrowseAllClick = () => {
+    navigate('/all_activities');
+  };
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('authToken');
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed:', err);
+      // Still remove token and redirect even if API call fails
+      localStorage.removeItem('authToken');
+      navigate('/login');
+    }
+  };
 
   useEffect(() => {
     // Fetch user data from API
     const fetchUserData = async () => {
-      setIsLoading(true);
       try {
         // Replace with your actual API endpoint
         const data = await api.get('/user/details');
-
+        
         setUserData(data);
+        setPointData(
+          data.point_history
+        )
+        setTierStatus(data.tier)
+        setAvailableRewards(data.rewards)
+        setRedeemHistory(data.redemption_history)
       } catch (err) {
         setError(err.message);
         // Use sample data for demonstration purposes
@@ -66,98 +93,178 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">User Profile</h1>
-        
-        {/* User Info Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-32 h-32 rounded-full overflow-hidden">
-              <img src={userData.avatar} alt="User avatar" className="w-full h-full object-cover" />
+    <div className="bg-gray-50 min-h-screen">
+      {/* Header */}
+      <header className="bg-indigo-600 text-white">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">RewardsPlus</h1>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center">
+              <User size={20} />
+              <span className="ml-2">{userData.name}</span>
             </div>
-            
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-2xl font-bold text-gray-800">{userData.name}</h2>
-              
-              <div className="flex items-center justify-center md:justify-start mt-2">
-                <User size={18} className="text-gray-500 mr-2" />
-                <span className="text-gray-600">{userData.email}</span>
-              </div>
-              
-              <div className="flex items-center justify-center md:justify-start mt-2">
-                <Award size={18} className="text-purple-500 mr-2" />
-                <span className="text-purple-700 font-semibold">{userData.points} Points</span>
-              </div>
-            </div>
+            <button 
+              onClick={handleLogout}
+              className="flex items-center hover:text-indigo-200 transition-colors"
+            >
+              <LogOut size={20} />
+              <span className="ml-2">Logout</span>
+            </button>
           </div>
         </div>
-        
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
         {/* Points Summary Card */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <Award size={20} className="text-purple-500 mr-2" />
-            Points Summary
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h4 className="text-sm text-purple-700 font-medium">Current Balance</h4>
-              <p className="text-2xl font-bold text-purple-800">{userData.points}</p>
+          <div className="grid md:grid-cols-4 gap-6">
+            <div>
+              <h2 className="text-lg text-gray-500 mb-1">Total Accumulated Points</h2>
+              <div className="flex items-center">
+                <Clock className="text-yellow-500" size={24} />
+                <span className="text-3xl font-bold ml-2">{userData.points_earned}</span>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-lg text-gray-500 mb-1">Available Points</h2>
+              <div className="flex items-center">
+                <Star className="text-yellow-500" size={24} />
+                <span className="text-3xl font-bold ml-2">{userData.points}</span>
+              </div>
             </div>
             
-            <div className="bg-green-50 p-4 rounded-lg">
-              <h4 className="text-sm text-green-700 font-medium">Points Earned</h4>
-              <p className="text-2xl font-bold text-green-800">{userData.points_earned}</p>
+            <div>
+              <h2 className="text-lg text-gray-500 mb-1">Current Tier</h2>
+              <div className="flex items-center">
+                <Award className="text-yellow-500" size={24} />
+                <span className="text-2xl font-bold ml-2">{tierStatus}</span>
+              </div>
             </div>
             
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h4 className="text-sm text-blue-700 font-medium">Points Redeemed</h4>
-              <p className="text-2xl font-bold text-blue-800">{userData.points_redeemed}</p>
+            <div>
+              <h2 className="text-lg text-gray-500 mb-1">Next Tier</h2>
+              <div className="mb-1">
+                <span>{userData.point_to_next_tier} points to {userData.next_tier}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-indigo-600 h-2.5 rounded-full" 
+                  style={{ width: `${(userData.points / (userData.points + userData.point_to_next_tier)) * 100}%` }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Purchase History */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-            <ShoppingBag size={20} className="text-gray-500 mr-2" />
-            Purchase History
-          </h3>
-          
-          {userData.point_history && userData.point_history.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="py-3 px-2 text-left text-sm font-medium text-gray-500">Date</th>
-                    <th className="py-3 px-2 text-left text-sm font-medium text-gray-500">Item</th>
-                    <th className="py-3 px-2 text-right text-sm font-medium text-gray-500">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userData.point_history.map((point_history) => (
-                    <tr key={point_history.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-3 px-2 text-sm text-gray-600 flex items-center">
-                        <Clock size={16} className="text-gray-400 mr-2" />
-                        {point_history.date}
-                      </td>
-                      <td className="py-3 px-2 text-sm text-gray-800 font-medium">{point_history.item}</td>
-                      <td className="py-3 px-2 text-sm text-gray-800 font-medium text-right">
-                        ${point_history.amount}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+        {/* Two Column Layout */}
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Recent Activity */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold flex items-center">
+                <Activity size={20} className="mr-2 text-indigo-600" />
+                Recent Activity
+              </h2>
+              <button onClick={handleBrowseAllClick} className="text-indigo-600 text-sm flex items-center">
+                View All <ChevronRight size={16} />
+              </button>
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              No purchase history available.
+            
+            <div className="space-y-4">
+              {recentActivities.map(activity => (
+                <div key={activity.id} className="flex justify-between items-center border-b pb-3">
+                  <div>
+                    <h3 className="font-medium">{activity.item}</h3>
+                    <p className="text-sm text-gray-500">{activity.date}</p>
+                  </div>
+                  <div className="flex items-center text-green-600">
+                    <span className="font-bold">+{parseInt(activity.amount)}</span>
+                    <Star size={16} className="ml-1" />
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+
+          {/* Available Rewards */}
+          <AvailableRewards 
+            availableRewards={availableRewards}
+            pointsBalance={userData.points}
+          />
         </div>
-      </div>
+
+        <div className="">
+            {/* Available Rewards */}
+            <RedeemHistory 
+              redeemHistory={redeemHistory}
+            />
+          </div>
+
+        {/* Featured Rewards Banner */}
+        <div className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-md p-6 text-white">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Limited Time Offer</h2>
+              <p className="mb-4">Double points on all purchases this weekend!</p>
+              <button className="bg-white text-indigo-600 px-6 py-2 rounded-md font-medium hover:bg-gray-100">
+                Learn More
+              </button>
+            </div>
+            <div className="hidden md:block">
+              <Star size={64} />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white mt-8 py-6">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-6">
+            <div>
+              <h3 className="text-lg font-bold mb-3">RewardsPlus</h3>
+              <p className="text-gray-400">Earn rewards on every purchase and engagement with our platform.</p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Quick Links</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>How It Works</li>
+                <li>Redeem Points</li>
+                <li>View Transactions</li>
+                <li>FAQs</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Contact</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Support</li>
+                <li>Help Center</li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3">Subscribe</h3>
+              <p className="text-gray-400 mb-2">Get updates on special offers</p>
+              <div className="flex">
+                <input 
+                  type="email" 
+                  placeholder="Your email" 
+                  className="px-3 py-2 rounded-l-md text-gray-800 w-full"
+                />
+                <button className="bg-indigo-600 px-4 py-2 rounded-r-md">
+                  Go
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400">
+            <p>© 2025 RewardsPlus. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

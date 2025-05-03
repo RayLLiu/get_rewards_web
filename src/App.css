@@ -58,9 +58,11 @@
   box-sizing: border-box;
 }
  */
-body {
+/* body {
   line-height: 1.6;
   color: #333;
   width: 100%;
   min-height: 100vh;
-}
+} */
+
+@import "tailwindcss";
