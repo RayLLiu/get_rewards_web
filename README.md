@@ -2,6 +2,9 @@
 
 A modern web application for managing customer rewards and loyalty programs. Built with React, Vite, and Tailwind CSS.
 
+
+<img width="1407" alt="Screenshot 2025-05-04 at 1 52 18 PM" src="https://github.com/user-attachments/assets/b88a9aa8-4d2b-437f-994a-3902fcb14bd3" />
+
 ## Features
 
 - 🎯 User Authentication (Sign up, Login, Logout)
