@@ -6,6 +6,7 @@ export default function RewardsLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ export default function RewardsLandingPage() {
 
   const testimonials = [
     {
-      quote: "RewardsPlus has completely changed how I shop. I've redeemed over 10,000 points for amazing discounts!",
+      quote: "GetRewards has completely changed how I shop. I've redeemed over 10,000 points for amazing discounts!",
       author: "Sarah J.",
       role: "Gold Member"
     },
@@ -85,8 +86,14 @@ export default function RewardsLandingPage() {
   const handleJoinClick = async (e) => {
     e.preventDefault();
 
+    // Validate password confirmation
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:3000/auth/signup', {
+      const response = await fetch('http://localhost:3000/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +126,7 @@ export default function RewardsLandingPage() {
       <header className="bg-white border-b border-gray-200 fixed w-full z-10">
         <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-indigo-600">RewardsPlus</h1>
+            <h1 className="text-2xl font-bold text-indigo-600">GetRewards</h1>
           </div>
           
           {/* Desktop Navigation */}
@@ -198,7 +205,7 @@ export default function RewardsLandingPage() {
       <section id="learn" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How RewardsPlus Works</h2>
+            <h2 className="text-3xl font-bold mb-4">How GetRewards Works</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">A simple three-step process to start earning and enjoying the benefits of our rewards program.</p>
           </div>
           
@@ -234,7 +241,7 @@ export default function RewardsLandingPage() {
       <section id="features" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why Join RewardsPlus?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Join GetRewards?</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">Our rewards program is designed to give you maximum value with minimal effort.</p>
           </div>
           
@@ -357,7 +364,7 @@ export default function RewardsLandingPage() {
             <p className="text-xl mb-8">Sign up now and get 500 bonus points just for joining!</p>
             
             <div className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col gap-4">
                 <input 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -382,6 +389,14 @@ export default function RewardsLandingPage() {
                   className="px-4 py-3 rounded-md text-gray-800 flex-grow bg-white"
                   required
                 />
+                <input 
+                  type="password" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm your password" 
+                  className="px-4 py-3 rounded-md text-gray-800 flex-grow bg-white"
+                  required
+                />
                 <button 
                   onClick={handleJoinClick}
                   className="bg-yellow-500 text-indigo-900 px-6 py-3 rounded-md font-medium hover:bg-yellow-400 transition whitespace-nowrap"
@@ -401,7 +416,7 @@ export default function RewardsLandingPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-lg font-bold mb-4">RewardsPlus</h3>
+              <h3 className="text-lg font-bold mb-4">GetRewards</h3>
               <p className="text-gray-400">The most rewarding loyalty program for our valued customers.</p>
               <div className="mt-4 flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white">
@@ -453,7 +468,7 @@ export default function RewardsLandingPage() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
-            <p>© 2025 RewardsPlus. All rights reserved.</p>
+            <p>© 2025 GetRewards. All rights reserved.</p>
           </div>
         </div>
       </footer>

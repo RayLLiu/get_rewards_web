@@ -12,7 +12,7 @@ export default function AvailableRewards({ availableRewards, pointsBalance }) {
   };
   const handleRedeem = async (reward_id) => {
     try {
-      await api.post(`/redeem/purchase`, {reward_id: reward_id});
+      await api.post(`/redemptions/purchase`, {reward_id: reward_id});
       window.location.reload(); 
     } catch (err) {
       setError(err.message);

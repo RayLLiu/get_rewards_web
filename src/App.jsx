@@ -1,7 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './components/LandingPage'
-import Signup from './components/Signup'
 import Login from './components/Login'
 import UserProfile from './components/authenticated/UserProfile'
 import './App.css'
@@ -15,7 +14,6 @@ function App() {
       <div className="app">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/all_rewards" element={<AllRewards />} />
           <Route path="/all_redemptions" element={<AllRedemptions />} />

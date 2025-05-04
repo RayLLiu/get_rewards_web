@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Star, Gift, ChevronLeft, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
+import PageHeader from '../legoPiece/PageHeader';
 
 
 export default function AllRewards() {
@@ -14,20 +15,9 @@ export default function AllRewards() {
   const [availableRewards, setAvailableRewards] = useState([]);
   const [filter, setFilter] = useState('all');
 
-  const handleLogout = async () => {
-    try {
-      localStorage.removeItem('authToken');
-      navigate('/');
-    } catch (err) {
-      console.error('Logout failed:', err);
-      localStorage.removeItem('authToken');
-      navigate('/');
-    }
-  };
-
   const handleRedeem = async (reward_id) => {
     try {
-      await api.post(`/redeem/purchase`, {reward_id: reward_id});
+      await api.post(`/redemptions/purchase`, {reward_id: reward_id});
       window.location.reload(); 
     } catch (err) {
       setError(err.message);
@@ -40,30 +30,14 @@ export default function AllRewards() {
 
         
         const [userResponse, rewardsResponse] = await Promise.all([
-          api.get('/user/details'),
-          api.get('/reward/list')
+          api.get('/users/details'),
+          api.get('/rewards/list')
         ]);
         
         setUserData(userResponse);
         setAvailableRewards(rewardsResponse);
       } catch (err) {
         setError(err.message);
-        // Use sample data for demonstration purposes
-        setUserData({
-          name: "Jane Doe",
-          email: "jane.doe@example.com",
-          points: 2750
-        });
-        setAvailableRewards([
-          { id: 1, name: "10% Discount Coupon", points: 500, category: "Discount" },
-          { id: 2, name: "Free Shipping", points: 800, category: "Shipping" },
-          { id: 3, name: "Gift Card $25", points: 2500, category: "Gift Card" },
-          { id: 4, name: "Premium Item", points: 3000, category: "Product" },
-          { id: 5, name: "20% Off Next Purchase", points: 1000, category: "Discount" },
-          { id: 6, name: "Free Product", points: 1500, category: "Product" },
-          { id: 7, name: "VIP Access", points: 5000, category: "Membership" },
-          { id: 8, name: "Birthday Reward", points: 200, category: "Special" }
-        ]);
       } finally {
         setIsLoading(false);
       }
@@ -94,33 +68,11 @@ export default function AllRewards() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-indigo-600 text-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => navigate(-1)}
-              className="flex items-center hover:text-indigo-200 transition-colors"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <h1 className="text-2xl font-bold">All Rewards</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <User size={20} />
-              <span className="ml-2">{userData.name}</span>
-            </div>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center hover:text-indigo-200 transition-colors"
-            >
-              <LogOut size={20} />
-              <span className="ml-2">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <PageHeader 
+        title="All Rewards"
+        userName={userData.name}
+        onBack={() => navigate(-1)}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -129,7 +81,7 @@ export default function AllRewards() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Star className="text-yellow-500" size={24} />
-              <span className="text-2xl font-bold ml-2">{userData.points}</span>
+              <span className="text-2xl font-bold ml-2">{userData.points_balance}</span>
               <span className="ml-2 text-gray-600">points available</span>
             </div>
             <div className="flex space-x-2">
@@ -142,25 +94,25 @@ export default function AllRewards() {
                 All
               </button>
               <button
-                onClick={() => setFilter('Discount')}
+                onClick={() => setFilter('Discounts')}
                 className={`px-4 py-2 rounded-md ${
-                  filter === 'Discount' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                  filter === 'Discounts' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 Discounts
               </button>
               <button
-                onClick={() => setFilter('Product')}
+                onClick={() => setFilter('Products')}
                 className={`px-4 py-2 rounded-md ${
-                  filter === 'Product' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                  filter === 'Products' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 Products
               </button>
               <button
-                onClick={() => setFilter('Gift Card')}
+                onClick={() => setFilter('Gift Cards')}
                 className={`px-4 py-2 rounded-md ${
-                  filter === 'Gift Card' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
+                  filter === 'Gift Cards' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 Gift Cards
@@ -187,7 +139,7 @@ export default function AllRewards() {
                   <button 
                     onClick={() => handleRedeem(reward.id)}
                     className={`px-4 py-2 rounded-md ${
-                      userData.points >= reward.points_required 
+                      userData.points_balance >= reward.points_required 
                         ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
                         : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                     }`}
@@ -203,7 +155,7 @@ export default function AllRewards() {
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-8 py-6">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© 2025 RewardsPlus. All rights reserved.</p>
+          <p className="text-gray-400">© 2025 GetRewards. All rights reserved.</p>
         </div>
       </footer>
     </div>

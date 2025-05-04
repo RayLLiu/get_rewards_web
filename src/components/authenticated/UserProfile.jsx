@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
 import AvailableRewards from '../legoPiece/AvailableRewards';
 import RedeemHistory from '../legoPiece/RedeemHistory';
+import PageHeader from '../legoPiece/PageHeader';
 
 export default function UserProfile() {
   const navigate = useNavigate();
@@ -21,53 +22,21 @@ export default function UserProfile() {
   const handleBrowseAllClick = () => {
     navigate('/all_activities');
   };
-  const handleLogout = async () => {
-    try {
-      localStorage.removeItem('authToken');
-      navigate('/');
-    } catch (err) {
-      console.error('Logout failed:', err);
-      // Still remove token and redirect even if API call fails
-      localStorage.removeItem('authToken');
-      navigate('/login');
-    }
-  };
 
   useEffect(() => {
     // Fetch user data from API
     const fetchUserData = async () => {
       try {
         // Replace with your actual API endpoint
-        const data = await api.get('/user/details');
+        const data = await api.get('/users/details');
         
         setUserData(data);
-        setPointData(
-          data.point_history
-        )
+        setPointData(data.earned_points)
         setTierStatus(data.tier)
         setAvailableRewards(data.rewards)
         setRedeemHistory(data.redemption_history)
       } catch (err) {
         setError(err.message);
-        // Use sample data for demonstration purposes
-        setUserData({
-          name: "Jane Doe",
-          email: "jane.doe@example.com",
-          points: 2750,
-          avatar: "/api/placeholder/200/200",
-          point_history: [
-            { id: 1, date: "2025-04-28", item: "Premium Subscription", amount: 49.99 },
-            { id: 2, date: "2025-04-15", item: "E-book Bundle", amount: 29.99 },
-            { id: 3, date: "2025-03-22", item: "Online Course", amount: 199.00 },
-            { id: 4, date: "2025-03-10", item: "Digital Download", amount: 12.99 }
-          ],
-          purchase_history: [
-            { id: 1, date: "2025-04-28", item: "Premium Subscription", amount: "49.99" },
-            { id: 2, date: "2025-04-15", item: "E-book Bundle", amount: "29.99" },
-            { id: 3, date: "2025-03-22", item: "Online Course", amount: "199.00" },
-            { id: 4, date: "2025-03-10", item: "Digital Download", amount: "12.99" }
-          ]
-        });
       } finally {
         setIsLoading(false);
       }
@@ -94,25 +63,11 @@ export default function UserProfile() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-indigo-600 text-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">RewardsPlus</h1>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <User size={20} />
-              <span className="ml-2">{userData.name}</span>
-            </div>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center hover:text-indigo-200 transition-colors"
-            >
-              <LogOut size={20} />
-              <span className="ml-2">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <PageHeader 
+        title="GetRewards"
+        userName={userData.name}
+        onBack={() => navigate(-1)}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -123,7 +78,7 @@ export default function UserProfile() {
               <h2 className="text-lg text-gray-500 mb-1">Total Accumulated Points</h2>
               <div className="flex items-center">
                 <Clock className="text-yellow-500" size={24} />
-                <span className="text-3xl font-bold ml-2">{userData.points_earned}</span>
+                <span className="text-3xl font-bold ml-2">{userData.points_accumulated}</span>
               </div>
             </div>
 
@@ -131,7 +86,7 @@ export default function UserProfile() {
               <h2 className="text-lg text-gray-500 mb-1">Available Points</h2>
               <div className="flex items-center">
                 <Star className="text-yellow-500" size={24} />
-                <span className="text-3xl font-bold ml-2">{userData.points}</span>
+                <span className="text-3xl font-bold ml-2">{userData.points_balance}</span>
               </div>
             </div>
             
@@ -151,7 +106,7 @@ export default function UserProfile() {
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div 
                   className="bg-indigo-600 h-2.5 rounded-full" 
-                  style={{ width: `${(userData.points / (userData.points + userData.point_to_next_tier)) * 100}%` }}
+                  style={{ width: `${(userData.points_accumulated / (userData.points_accumulated + userData.point_to_next_tier)) * 100}%` }}
                 ></div>
               </div>
             </div>
@@ -176,7 +131,7 @@ export default function UserProfile() {
               {recentActivities.map(activity => (
                 <div key={activity.id} className="flex justify-between items-center border-b pb-3">
                   <div>
-                    <h3 className="font-medium">{activity.item}</h3>
+                    <h3 className="font-medium">{activity.merchant}</h3>
                     <p className="text-sm text-gray-500">{activity.date}</p>
                   </div>
                   <div className="flex items-center text-green-600">
@@ -191,7 +146,7 @@ export default function UserProfile() {
           {/* Available Rewards */}
           <AvailableRewards 
             availableRewards={availableRewards}
-            pointsBalance={userData.points}
+            pointsBalance={userData.points_balance}
           />
         </div>
 
@@ -224,7 +179,7 @@ export default function UserProfile() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-6">
             <div>
-              <h3 className="text-lg font-bold mb-3">RewardsPlus</h3>
+              <h3 className="text-lg font-bold mb-3">GetRewards</h3>
               <p className="text-gray-400">Earn rewards on every purchase and engagement with our platform.</p>
             </div>
             <div>
@@ -261,7 +216,7 @@ export default function UserProfile() {
             </div>
           </div>
           <div className="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400">
-            <p>© 2025 RewardsPlus. All rights reserved.</p>
+            <p>© 2025 GetRewards. All rights reserved.</p>
           </div>
         </div>
       </footer>

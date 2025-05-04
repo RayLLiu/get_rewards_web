@@ -16,7 +16,7 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/auth/signin', {
+      const response = await fetch('http://localhost:3000/users/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export default function Login() {
       {/* Header */}
       <header className="bg-indigo-600 text-white">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold">RewardsPlus</h1>
+          <h1 className="text-2xl font-bold">GetRewards</h1>
         </div>
       </header>
 
@@ -157,7 +157,7 @@ export default function Login() {
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-8 py-6">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© 2025 RewardsPlus. All rights reserved.</p>
+          <p className="text-gray-400">© 2025 GetRewards. All rights reserved.</p>
         </div>
       </footer>
     </div>

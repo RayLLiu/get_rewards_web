@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Star, Gift, ChevronLeft, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
-
+import PageHeader from '../legoPiece/PageHeader';
 
 export default function AllRedemptions() {
   const navigate = useNavigate();
@@ -13,25 +13,14 @@ export default function AllRedemptions() {
   const [error, setError] = useState(null);
   const [redemptions, setRedemptions] = useState([]);
 
-  const handleLogout = async () => {
-    try {
-      localStorage.removeItem('authToken');
-      navigate('/');
-    } catch (err) {
-      console.error('Logout failed:', err);
-      localStorage.removeItem('authToken');
-      navigate('/');
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
 
         
         const [userResponse, redemptionsResponse] = await Promise.all([
-          api.get('/user/details'),
-          api.get('/redemption/list')
+          api.get('/users/details'),
+          api.get('/redemptions/list')
         ]);
         
         setUserData(userResponse);
@@ -80,33 +69,11 @@ export default function AllRedemptions() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-indigo-600 text-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <button 
-              onClick={() => navigate(-1)}
-              className="flex items-center hover:text-indigo-200 transition-colors"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <h1 className="text-2xl font-bold">All redemptions</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <User size={20} />
-              <span className="ml-2">{userData.name}</span>
-            </div>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center hover:text-indigo-200 transition-colors"
-            >
-              <LogOut size={20} />
-              <span className="ml-2">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <PageHeader 
+        title="All redemptions"
+        userName={userData.name}
+        onBack={() => navigate(-1)}
+      />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -115,7 +82,7 @@ export default function AllRedemptions() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Star className="text-yellow-500" size={24} />
-              <span className="text-2xl font-bold ml-2">{userData.points}</span>
+              <span className="text-2xl font-bold ml-2">{userData.points_balance}</span>
               <span className="ml-2 text-gray-600">points available</span>
             </div>
           </div>
@@ -134,7 +101,7 @@ export default function AllRedemptions() {
               {redemptions.map(redeem => (
                 <div key={redeem.id} className="flex justify-between items-center border-b pb-3">
                   <div>
-                    <h3 className="font-medium">{redeem.items}</h3>
+                    <h3 className="font-medium">{redeem.name}</h3>
                     <p className="text-sm text-gray-500">{redeem.date}</p>
                   </div>
                   <div className="flex items-center text-red-600">

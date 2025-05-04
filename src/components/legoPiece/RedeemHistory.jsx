@@ -23,11 +23,11 @@ export default function RedeemHistory({ redeemHistory }) {
               {redeemHistory.map(redeem => (
                 <div key={redeem.id} className="flex justify-between items-center border-b pb-3">
                   <div>
-                    <h3 className="font-medium">{redeem.items}</h3>
+                    <h3 className="font-medium">{redeem.name}</h3>
                     <p className="text-sm text-gray-500">{redeem.date}</p>
                   </div>
                   <div className="flex items-center text-red-600">
-                    <span className="font-bold">-{redeem.amount}</span>
+                    <span className="font-bold">-{redeem.price}</span>
                     <Star size={16} className="ml-1" />
                   </div>
                 </div>
