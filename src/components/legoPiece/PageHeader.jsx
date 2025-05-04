@@ -1,5 +1,7 @@
 import { ChevronLeft, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function PageHeader({ title, userName, onBack }) {
   const navigate = useNavigate();
@@ -43,4 +45,10 @@ export default function PageHeader({ title, userName, onBack }) {
       </div>
     </header>
   );
-} 
+}
+
+PageHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
+  onBack: PropTypes.func.isRequired
+}; 

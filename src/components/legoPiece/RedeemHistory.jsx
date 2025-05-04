@@ -1,5 +1,7 @@
 import { Gift, ChevronRight, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function RedeemHistory({ redeemHistory }) {
   const navigate = useNavigate();
@@ -36,4 +38,13 @@ export default function RedeemHistory({ redeemHistory }) {
       </div>
     </div>
   );
-} 
+}
+
+RedeemHistory.propTypes = {
+  redeemHistory: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired
+  })).isRequired
+}; 

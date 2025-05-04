@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Star, Gift, ChevronLeft, User, LogOut } from 'lucide-react';
+import { Star, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
 import PageHeader from '../legoPiece/PageHeader';
+import React from 'react';
 
 
 export default function AllRewards() {

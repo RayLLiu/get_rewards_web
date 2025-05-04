@@ -1,5 +1,6 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { Star, Activity, ChevronLeft, User, LogOut } from 'lucide-react';
+import { Star, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
 import PageHeader from '../legoPiece/PageHeader';

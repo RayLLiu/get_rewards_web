@@ -1,7 +1,9 @@
-import { Gift, ChevronRight, Star } from 'lucide-react';
+import { Gift, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useApi } from '../authenticated/api';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function AvailableRewards({ availableRewards, pointsBalance }) {
   const navigate = useNavigate();
@@ -52,4 +54,14 @@ export default function AvailableRewards({ availableRewards, pointsBalance }) {
       </div>
     </div>
   );
-} 
+}
+
+AvailableRewards.propTypes = {
+  availableRewards: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    category: PropTypes.string.isRequired,
+    points_required: PropTypes.number.isRequired
+  })).isRequired,
+  pointsBalance: PropTypes.number.isRequired
+}; 

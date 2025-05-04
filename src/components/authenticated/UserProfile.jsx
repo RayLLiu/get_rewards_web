@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Star, Gift, Activity, Award, ChevronRight, Bell, Settings, User, LogOut, Clock } from 'lucide-react';
+import { Star, Activity, Award, ChevronRight, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from './api';
 import AvailableRewards from '../legoPiece/AvailableRewards';
 import RedeemHistory from '../legoPiece/RedeemHistory';
 import PageHeader from '../legoPiece/PageHeader';
+import React from 'react';
 
 export default function UserProfile() {
   const navigate = useNavigate();

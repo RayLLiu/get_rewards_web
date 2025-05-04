@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Star, Gift, Check, ArrowRight, Menu, X, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+import React from 'react';
 export default function RewardsLandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -308,7 +308,7 @@ export default function RewardsLandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">What Our Members Say</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Don't just take our word for it. See what our members have experienced.</p>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Don&apos;t just take our word for it. See what our members have experienced.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -319,7 +319,7 @@ export default function RewardsLandingPage() {
                     <Star key={i} size={18} fill="currentColor" />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">"{testimonial.quote}"</p>
+                <p className="text-gray-600 mb-6 italic">&quot;{testimonial.quote}&quot;</p>
                 <div>
                   <p className="font-bold">{testimonial.author}</p>
                   <p className="text-gray-500 text-sm">{testimonial.role}</p>
@@ -335,7 +335,7 @@ export default function RewardsLandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Have questions? We've got answers.</p>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Have questions? We&apos;ve got answers.</p>
           </div>
           
           <div className="max-w-3xl mx-auto">
