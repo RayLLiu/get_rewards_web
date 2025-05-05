@@ -39,7 +39,7 @@ A modern web application for managing customer rewards and loyalty programs. Bui
 1. Clone the repository:
 ```bash
 git clone https://github.com/raylliu/getrewards_web.git
-cd rewardsplus
+cd get_rewards_web
 ```
 
 2. Install dependencies:
